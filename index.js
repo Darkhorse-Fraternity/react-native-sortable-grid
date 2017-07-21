@@ -358,31 +358,49 @@ class SortableGrid extends Component {
   _blockPositionsSet = () => this.state.blockPositionsSetCount === this.items.length
 
   _saveItemOrder = (items) => {
-    items.forEach( (item, index) => {
-      const foundKey = _.findKey(this.itemOrder, oldItem => oldItem.key === item.key);
-
-      if (foundKey) {
-        this.items[foundKey] = item;
-      }
-      else {
-        this.itemOrder.push({ key: item.key, ref: item.ref, order: this.items.length });
-        if (!this.initialLayoutDone) {
-          this.items.push(item);
-        }
-        else {
-          let blockPositions = this.state.blockPositions
-          let blockPositionsSetCount = ++this.state.blockPositionsSetCount
-          let thisPosition = this.getNextBlockCoordinates()
-          blockPositions.push({
-            currentPosition : new Animated.ValueXY( thisPosition ),
-            origin          : thisPosition
-          })
-          this.items.push(item)
-          this.setState({ blockPositions, blockPositionsSetCount })
-          this.setGhostPositions()
-        }
-      }
+    this.items = []
+    this.itemOrder = []
+    const blockPositions = []
+    items.forEach((item,index)=>{
+      let thisPosition = this.getNextBlockCoordinates()
+      blockPositions.push({
+        currentPosition : new Animated.ValueXY( thisPosition ),
+        origin          : thisPosition
+      })
+      this.itemOrder.push({ key: item.key, ref: item.ref, order: this.items.length })
+      this.items.push(item)
+      // this.setState({ blockPositions})
     })
+    if( this.items.length != this.state.blockPositionsSetCount &&
+        this.state.blockPositionsSetCount != 0){
+      this.setState({blockPositionsSetCount:this.items.length,blockPositions })
+      this.setGhostPositions()
+    }
+    // items.forEach( (item, index) => {
+    //   const foundKey = _.findKey(this.itemOrder, oldItem => oldItem.key === item.key);
+    //
+    //   if (foundKey) {
+    //     this.items[foundKey] = item;
+    //   }
+    //   else {
+    //     this.itemOrder.push({ key: item.key, ref: item.ref, order: this.items.length });
+    //     if (!this.initialLayoutDone) {
+    //       this.items.push(item);
+    //     }
+    //     else {
+    //       let blockPositions = this.state.blockPositions
+    //       let blockPositionsSetCount = ++this.state.blockPositionsSetCount
+    //       let thisPosition = this.getNextBlockCoordinates()
+    //       blockPositions.push({
+    //         currentPosition : new Animated.ValueXY( thisPosition ),
+    //         origin          : thisPosition
+    //       })
+    //       this.items.push(item)
+    //       this.setState({ blockPositions, blockPositionsSetCount })
+    //       this.setGhostPositions()
+    //     }
+    //   }
+    // })
   }
 
   _removeDisappearedChildren = (items) => {
