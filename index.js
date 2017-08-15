@@ -574,7 +574,7 @@ class SortableGrid extends Component {
 
   _getBlockStyle = (key) => [
     { width: this.state.blockWidth,
-      height: this.state.blockWidth,
+      height: this.state.blockWidth - this.props.dHeight||0,
       justifyContent: 'center' },
     this._blockPositionsSet() && (this.initialDragDone || this.state.deleteModeOn) &&
     { position: 'absolute',
